@@ -110,18 +110,20 @@ python -m etl.run_pipeline all      # 依序執行（預設）
 ### 4.1 每日更新排程
 
 **建議設定：**
-- **程式路徑：** `C:\Users\jessi\Desktop\pm25\scripts\pm25_etl.bat`
-- **工作目錄：** `C:\Users\jessi\Desktop\pm25\scripts`
+- **程式路徑：** `pm25/scripts/pm25_etl.bat`
+- **工作目錄：** `pm25/scripts`
 - **執行時間：** 每日凌晨 2:00
 - **參數：** 不填（預設每日更新）
+- (`pm25` 替換為在本機 clone repo 的路徑）
 
 ### 4.2 歷史資料載入排程
 
 **設定：**
-- **程式路徑：** `C:\Users\jessi\Desktop\pm25\scripts\pm25_etl.bat`
-- **工作目錄：** `C:\Users\jessi\Desktop\pm25\scripts`
+- **程式路徑：** `pm25/scripts/pm25_etl.bat`
+- **工作目錄：** `pm25/scripts`
 - **參數：** `full`
 - **執行時間：** 手動執行或設定為每月一次
+- (`pm25` 替換為在本機 clone repo 的路徑）
 
 ### 4.3 設定步驟
 
