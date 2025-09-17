@@ -139,7 +139,7 @@ python -m etl.run_pipeline all      # 依序執行（預設）
 pm25/
 ├── scripts/
 │   ├── pm25_etl.bat          # 主要執行檔案
-│   └── 使用說明.md           # 使用說明檔案
+│   └── simple_email_test.py  # email通知測試
 ├── etl/                      # ETL 程式碼
 │   ├── fetch_pm25_daily.py   # 昨日資料抓取（重試與超時）
 │   ├── fetch_pm25_full.py    # 全量歷史抓取（分頁、重試與超時）
@@ -181,11 +181,6 @@ SMTP_PASS=your_app_password
 SMTP_FROM=your_email@gmail.com
 SMTP_TO=recipient@example.com
 ```
-
-**其他 SMTP 服務：**
-- Outlook: `smtp-mail.outlook.com:587`
-- Yahoo: `smtp.mail.yahoo.com:587`
-- SendGrid: `smtp.sendgrid.net:587`
 
 ## 7. 日誌系統
 
