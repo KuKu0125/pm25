@@ -68,10 +68,36 @@ def transform_pm25_data(raw_dir='data/raw', cleaned_dir='data/cleaned', output_f
     # 3. 建立 sitename -> siteid 對應表（用於補完）
     sitename_to_siteid = _build_sitename_to_siteid_mapping(df)
 
-    # 4. 日期轉換（寬鬆解析）
-    df['monitordate'] = pd.to_datetime(df['monitordate'], errors='coerce').dt.date
-    null_dates = df['monitordate'].isna().sum()
-    logger.info(f"日期轉換後缺失：{null_dates} 筆")
+    # 4. 日期轉換（先正規化字串，再混合格式解析）
+    # - 去除前後空白與全形/不換行空白
+    # - 統一分隔符為 '-'
+    # - 只保留前 10 碼（避免帶時間字串干擾）
+    try:
+        raw_date_str = (
+            df['monitordate']
+            .astype(str)
+            .str.replace('\u3000|\xa0|\u200b|\ufeff', '', regex=True)
+            .str.strip()
+        )
+        normalized_date_str = (
+            raw_date_str
+            .str.replace('/', '-', regex=False)
+            .str.slice(0, 10)
+        )
+        # 資料源格式固定為 YYYY-MM-DD（僅有空白差異），用明確格式更穩定
+        parsed_datetime = pd.to_datetime(normalized_date_str, errors='coerce', format='%Y-%m-%d')
+        df['monitordate'] = parsed_datetime.dt.date
+
+        null_dates = df['monitordate'].isna().sum()
+        logger.info(f"日期轉換後缺失：{null_dates} 筆")
+
+        if null_dates > 0:
+            # 取樣幾筆無法解析的原始值，方便排查
+            bad_samples = raw_date_str[parsed_datetime.isna()].dropna().unique().tolist()[:10]
+            logger.warning(f"無法解析的日期樣本（最多 10 筆）：{bad_samples}")
+    except Exception:
+        logger.exception("日期轉換過程發生非預期錯誤")
+        raise
 
     # 5. 數值轉換
     df['concentration'] = pd.to_numeric(df['concentration'], errors='coerce')
